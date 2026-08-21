@@ -91,7 +91,7 @@ async function botLoop() {
 		)
 
 		// Step 2: Make decision
-		const decision = strategy.makeDecision(data)
+		const decision = await strategy.makeDecision(data)
 
 		// Step 3: Get signal components for logging
 		const rsiSignal = strategy.analyzeRSI(data.rsi)
