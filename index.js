@@ -99,6 +99,7 @@ async function botLoop() {
 		const priceActionSignal = strategy.analyzePriceAction(data.price.price)
 
 		// Step 4: Log no-trade if applicable
+		console.log('Log no trade if applicable? : ', decision, strategy)
 		if (decision.action === 'HOLD' && strategy.getPosition() === null) {
 			noTradeLogger.logNoTrade(
 				data,
