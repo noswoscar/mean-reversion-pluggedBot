@@ -1,0 +1,6 @@
+Buy at overbought oversold and price change slowdown (55 45)
+stops: reversal full move success / reach opposite rsi and rsi reversed
+stoploss: from config (0.01 === 1%)
+-- analyze price action, check if ispeaking and oversbought (sell) check if isbottoming and oversold (buy)
+add confidence on lower volume
+uses an adx checker to trade in ranging market

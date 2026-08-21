@@ -1,0 +1,44 @@
+{
+	"name": "mean-reversion-bot",
+	"version": "2.0.0",
+	"description": "Mean Reversion Trading Bot with proper timing - Slowdown leads, RSI confirms/exits",
+	"main": "index.js",
+	"scripts": {
+		"start": "node index.js",
+		"dev": "nodemon index.js",
+		"stats": "node -e \"const Config = require('./config/Config'); const TradeLogger = require('./services/TradeLogger'); const config = new Config(); const logger = new TradeLogger(config); console.log(JSON.stringify(logger.getStats(), null, 2))\"",
+		"trades": "node -e \"const Config = require('./config/Config'); const TradeLogger = require('./services/TradeLogger'); const config = new Config(); const logger = new TradeLogger(config); console.log(logger.getTrades(10))\"",
+		"no-trades": "node -e \"const Config = require('./config/Config'); const NoTradeLogger = require('./services/NoTradeLogger'); const config = new Config(); const logger = new NoTradeLogger(config); console.log(logger.getNoTrades(10))\""
+	},
+	"keywords": [
+		"trading",
+		"bot",
+		"bitcoin",
+		"mean-reversion",
+		"crypto",
+		"rsi",
+		"slowdown",
+		"automated-trading"
+	],
+	"author": "Oscar",
+	"license": "MIT",
+	"dependencies": {
+		"axios": "^1.6.0"
+	},
+	"devDependencies": {
+		"nodemon": "^3.0.1",
+		"eslint": "^8.55.0",
+		"prettier": "^3.1.0"
+	},
+	"engines": {
+		"node": ">=14.0.0"
+	},
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/yourusername/mean-reversion-bot.git"
+	},
+	"bugs": {
+		"url": "https://github.com/yourusername/mean-reversion-bot/issues"
+	},
+	"homepage": "https://github.com/yourusername/mean-reversion-bot#readme"
+}
