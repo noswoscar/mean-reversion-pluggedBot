@@ -109,7 +109,6 @@ class RangeStrategy {
 				decision.reasons = exitCheck.reasons
 				decision.positionId = this.currentPosition.tradeId
 
-				// Execute EXIT via LongService HTTP API
 				await this.executeExit(decision)
 				return decision
 			}
@@ -149,12 +148,18 @@ class RangeStrategy {
 		decision.confidence = confidenceResult.confidence
 
 		// =============================================
-		// STEP 5: Check if we should enter
+		// STEP 5: Check if we should enter (LONG ONLY)
 		// =============================================
+
+		// Ignore SELL/SHORT signals - ONLY trade LONG
+		if (combined.action === 'SELL') {
+			decision.reasons = ['⏭️ Ignoring SHORT signal - LONG only strategy']
+			return decision
+		}
 
 		if (
 			confidenceResult.confidence >= this.config.minConfidence &&
-			combined.action !== 'HOLD' &&
+			combined.action === 'BUY' && // Only allow BUY (LONG)
 			this.currentPosition === null
 		) {
 			const signal = this.generateSignal(combined, currentPrice)
@@ -172,7 +177,6 @@ class RangeStrategy {
 					}
 				}
 
-				// Execute ENTRY via LongService HTTP API
 				await this.executeEntry(decision)
 				return decision
 			}
