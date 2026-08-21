@@ -54,6 +54,7 @@ class NoTradeLogger {
 	// =============================================
 
 	logNoTrade(data, decision, rsiSignal, slowdownSignal, priceActionSignal, volumeSignal, adxSignal) {
+		console.log('logging no trade')
 		// Extract volume data safely
 		let volumeRatio = 'N/A'
 		let volumeInterpretation = 'N/A'
