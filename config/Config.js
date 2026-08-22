@@ -18,7 +18,7 @@ class Config {
 		this.botName = options.botName || process.env.BOT_NAME || 'MeanReversionBot5'
 		this.botLoopInterval = parseInt(options.botLoopInterval || process.env.BOT_LOOP_INTERVAL || 10000) // 10 seconds
 		this.minConfidence = parseFloat(options.minConfidence || process.env.MIN_CONFIDENCE || 0.5) // LOWERED for testing
-		this.accountBalance = parseFloat(options.accountBalance || process.env.ACCOUNT_BALANCE || 10)
+		this.accountBalance = parseFloat(options.accountBalance || process.env.ACCOUNT_BALANCE || 25)
 
 		// =============================================
 		// RISK PARAMETERS (Adjusted for Mean Reversion)

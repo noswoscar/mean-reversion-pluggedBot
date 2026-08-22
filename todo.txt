@@ -1,0 +1,6 @@
+check bot is getting correct
+adx value
+slowdown value
+rsi value
+
+look at range and check bot entry with LongService working
