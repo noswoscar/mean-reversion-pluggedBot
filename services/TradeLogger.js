@@ -1,4 +1,4 @@
-// services/TradeLogger.js - Logs executed trades
+// services/TradeLogger.js - Logs executed trades with better number formatting
 
 const fs = require('fs')
 const path = require('path')
@@ -25,7 +25,7 @@ class TradeLogger {
 	}
 
 	ensureFiles() {
-		// Trades file - UPDATED with ADX columns
+		// Trades file
 		if (!fs.existsSync(this.tradesFile)) {
 			const header = [
 				'exitTime',
@@ -43,13 +43,13 @@ class TradeLogger {
 				'holdingHours',
 				'entryVolumeRatio',
 				'entryVolumeInterpretation',
-				'entryADX', // ADDED
-				'entryADXState' // ADDED
+				'entryADX',
+				'entryADXState'
 			].join(',')
 			fs.writeFileSync(this.tradesFile, header + '\n')
 		}
 
-		// Trade Results file - UPDATED with ADX columns
+		// Trade Results file
 		if (!fs.existsSync(this.tradeResultsFile)) {
 			const header = [
 				'tradeId',
@@ -68,11 +68,45 @@ class TradeLogger {
 				'holdingHours',
 				'entryVolumeRatio',
 				'entryVolumeInterpretation',
-				'entryADX', // ADDED
-				'entryADXState' // ADDED
+				'entryADX',
+				'entryADXState'
 			].join(',')
 			fs.writeFileSync(this.tradeResultsFile, header + '\n')
 		}
+	}
+
+	// =============================================
+	// HELPER: SMART NUMBER FORMATTING
+	// =============================================
+
+	formatNumber(value, decimals = 2) {
+		if (value === undefined || value === null || isNaN(value)) return '0'
+
+		// Use scientific notation for very small numbers
+		const absValue = Math.abs(value)
+		if (absValue > 0 && absValue < 0.0001) {
+			return value.toExponential(4)
+		}
+
+		// Auto-adjust decimal places based on magnitude
+		let decimalPlaces = decimals
+		if (absValue < 0.01) decimalPlaces = 8
+		else if (absValue < 1) decimalPlaces = 6
+		else if (absValue < 100) decimalPlaces = 4
+		else decimalPlaces = 2
+
+		return value.toFixed(decimalPlaces)
+	}
+
+	formatPrice(value) {
+		if (value === undefined || value === null || isNaN(value)) return '0'
+		return value.toFixed(2)
+	}
+
+	formatSize(value) {
+		if (value === undefined || value === null || isNaN(value)) return '0'
+		// Show at least 8 decimal places for BTC amounts
+		return value.toFixed(8)
 	}
 
 	// =============================================
@@ -93,16 +127,16 @@ class TradeLogger {
 		let entryVolumeInterpretation = 'N/A'
 
 		if (trade.volumeData && trade.volumeData.success && trade.volumeData.data) {
-			entryVolumeRatio = (trade.volumeData.data.volumeRatio || 0).toFixed(2)
+			entryVolumeRatio = this.formatNumber(trade.volumeData.data.volumeRatio || 0, 2)
 			entryVolumeInterpretation = trade.volumeData.data.interpretation || 'NORMAL'
 		}
 
-		// Extract ADX data safely - NEW
+		// Extract ADX data safely
 		let entryADX = 'N/A'
 		let entryADXState = 'N/A'
 
 		if (trade.adxData && trade.adxData.success) {
-			entryADX = (trade.adxData.value || 0).toFixed(2)
+			entryADX = this.formatNumber(trade.adxData.value || 0, 2)
 			entryADXState = trade.adxData.marketState || 'UNKNOWN'
 		}
 
@@ -113,21 +147,21 @@ class TradeLogger {
 		const tradeRow = [
 			trade.exitTime,
 			trade.side,
-			trade.entryPrice.toFixed(2),
-			trade.exitPrice.toFixed(2),
-			trade.size.toFixed(4),
-			trade.grossPnL.toFixed(2),
-			(trade.fee || 0).toFixed(2),
-			trade.netPnL.toFixed(2),
+			this.formatPrice(trade.entryPrice),
+			this.formatPrice(trade.exitPrice),
+			this.formatSize(trade.size), // Now shows full precision
+			this.formatNumber(trade.grossPnL, 2),
+			this.formatNumber(trade.fee || 0, 8), // Show fee with more precision
+			this.formatNumber(trade.netPnL, 2),
 			trade.entryTime,
 			trade.entryReason || '',
 			trade.exitReason || '',
-			(trade.confidence || 0).toFixed(2),
-			holdingHours.toFixed(2),
+			this.formatNumber(trade.confidence || 0, 2),
+			this.formatNumber(holdingHours, 2),
 			entryVolumeRatio,
 			entryVolumeInterpretation,
-			entryADX, // ADDED
-			entryADXState // ADDED
+			entryADX,
+			entryADXState
 		].join(',')
 
 		try {
@@ -145,20 +179,20 @@ class TradeLogger {
 			trade.entryTime,
 			trade.exitTime,
 			trade.side,
-			trade.entryPrice.toFixed(2),
-			trade.exitPrice.toFixed(2),
-			trade.size.toFixed(4),
-			trade.grossPnL.toFixed(2),
-			(trade.fee || 0).toFixed(2),
-			trade.netPnL.toFixed(2),
-			returnPercent.toFixed(2),
+			this.formatPrice(trade.entryPrice),
+			this.formatPrice(trade.exitPrice),
+			this.formatSize(trade.size), // Show full precision
+			this.formatNumber(trade.grossPnL, 2),
+			this.formatNumber(trade.fee || 0, 8),
+			this.formatNumber(trade.netPnL, 2),
+			this.formatNumber(returnPercent, 4), // Show more precision for small percentages
 			trade.entryReason || '',
 			trade.exitReason || '',
-			holdingHours.toFixed(2),
+			this.formatNumber(holdingHours, 2),
 			entryVolumeRatio,
 			entryVolumeInterpretation,
-			entryADX, // ADDED
-			entryADXState // ADDED
+			entryADX,
+			entryADXState
 		].join(',')
 
 		try {
@@ -167,8 +201,11 @@ class TradeLogger {
 			console.error('[TradeLogger] Failed to write trade result:', error.message)
 		}
 
+		// Log with appropriate precision
 		console.log(
-			`[TradeLogger] ✅ Trade logged: ${trade.side} | Entry: ${trade.entryPrice.toFixed(2)} | Exit: ${trade.exitPrice.toFixed(2)} | PnL: $${trade.netPnL.toFixed(2)} | ${holdingHours.toFixed(1)}h | Volume: ${entryVolumeInterpretation} | ADX: ${entryADX} (${entryADXState})`
+			`[TradeLogger] ✅ Trade logged: ${trade.side} | Entry: ${this.formatPrice(trade.entryPrice)} | Exit: ${this.formatPrice(trade.exitPrice)} | ` +
+				`Size: ${this.formatSize(trade.size)} BTC | PnL: $${this.formatNumber(trade.netPnL, 2)} | ${this.formatNumber(holdingHours, 1)}h | ` +
+				`Volume: ${entryVolumeInterpretation} | ADX: ${entryADX} (${entryADXState})`
 		)
 	}
 
