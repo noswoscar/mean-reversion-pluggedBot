@@ -68,6 +68,7 @@ class DataGatherer {
 			const response = await axios.get(`${this.rsiServiceUrl}/api/rsi/current?range=${range}`, {
 				timeout: this.timeout
 			})
+			console.log('rsi response', response)
 
 			if (response.data.success) {
 				const data = response.data.data
