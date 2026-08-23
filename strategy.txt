@@ -4,3 +4,6 @@ stoploss: from config (0.01 === 1%)
 -- analyze price action, check if ispeaking and oversbought (sell) check if isbottoming and oversold (buy)
 add confidence on lower volume
 uses an adx checker to trade in ranging market
+
+plugged the bot into the LongService and activated long trades
+use a default size wallet of 10 so bot uses minimal amount for trades
