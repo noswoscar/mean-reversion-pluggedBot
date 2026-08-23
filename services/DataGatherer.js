@@ -71,6 +71,7 @@ class DataGatherer {
 
 			if (response.data.success) {
 				const data = response.data.data
+				console.log('got rsi data!! ', response.data.data)
 				return {
 					success: true,
 					currentRsi: data.currentRsi,
