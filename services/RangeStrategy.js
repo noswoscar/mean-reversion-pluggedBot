@@ -79,25 +79,6 @@ class RangeStrategy {
 		}
 
 		// =============================================
-		// STEP 1: Check ADX - BLOCK TRADES IF ADX > 6
-		// =============================================
-
-		if (adx && adx.success) {
-			if (adx.value > this.maxADXForEntry) {
-				decision.reasons = [
-					`⛔ ADX too high (${adx.value.toFixed(2)}) - Market trending (${adx.marketState})`,
-					`Max ADX for entry: ${this.maxADXForEntry}`
-				]
-				decision.adxBlocked = true
-				return decision
-			}
-		} else if (adx && !adx.success) {
-			if (this.debug) {
-				console.log('[RangeStrategy] ⚠️ ADX data unavailable - continuing without ADX check')
-			}
-		}
-
-		// =============================================
 		// STEP 2: Check if we have an OPEN position
 		// =============================================
 
@@ -115,6 +96,25 @@ class RangeStrategy {
 
 			decision.reasons = [`Position already open (Trade #${this.currentPosition.tradeId}) - waiting for exit`]
 			return decision
+		}
+
+		// =============================================
+		// STEP 1: Check ADX - BLOCK TRADES IF ADX > 6
+		// =============================================
+
+		if (adx && adx.success) {
+			if (adx.value > this.maxADXForEntry) {
+				decision.reasons = [
+					`⛔ ADX too high (${adx.value.toFixed(2)}) - Market trending (${adx.marketState})`,
+					`Max ADX for entry: ${this.maxADXForEntry}`
+				]
+				decision.adxBlocked = true
+				return decision
+			}
+		} else if (adx && !adx.success) {
+			if (this.debug) {
+				console.log('[RangeStrategy] ⚠️ ADX data unavailable - continuing without ADX check')
+			}
 		}
 
 		// =============================================
