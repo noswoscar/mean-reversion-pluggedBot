@@ -66,6 +66,7 @@ async function botLoop() {
 			console.log(`   ⚠️ Failed to gather data: ${data.error}`)
 			return
 		}
+		console.log('data gathered:', data)
 
 		// Store volume and ADX data for trade logging
 		currentVolumeData = data.volume || null
