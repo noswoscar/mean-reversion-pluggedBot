@@ -358,6 +358,8 @@ class RangeStrategy {
 		const isFalling = trend === 'FALLING'
 		const isRising = trend === 'RISING'
 
+		console.log('RSI Analysis:', { rsi, status, trend })
+		console.log('isFalling', isFalling)
 		let strength = 0
 		let reason = []
 
