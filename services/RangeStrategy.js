@@ -246,7 +246,7 @@ class RangeStrategy {
 
 		try {
 			const position = this.currentPosition
-			const btcAmount = position.btcAmount || position.positionSize
+			const btcAmount = position.size || position.positionSize
 
 			console.log(`[RangeStrategy] 📉 Closing position: ${this.symbol} - ${btcAmount} BTC`)
 			console.log(`[RangeStrategy] Entry price: $${position.entryPrice}`)
@@ -804,7 +804,7 @@ class RangeStrategy {
 
 	calculatePnL(position, exitPrice) {
 		const entry = position.entryPrice
-		const size = position.positionSize || position.size
+		const size = position.size || position.positionSize
 
 		if (position.side === 'LONG') {
 			return (exitPrice - entry) * size
