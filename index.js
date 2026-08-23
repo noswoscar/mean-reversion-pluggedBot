@@ -66,7 +66,6 @@ async function botLoop() {
 			console.log(`   ⚠️ Failed to gather data: ${data.error}`)
 			return
 		}
-		console.log('data gathered:', data)
 
 		// Store volume and ADX data for trade logging
 		currentVolumeData = data.volume || null
@@ -100,7 +99,9 @@ async function botLoop() {
 		const priceActionSignal = strategy.analyzePriceAction(data.price.price)
 
 		// Step 4: Log no-trade if applicable
-		console.log('Log no trade if applicable? : ', decision, decision.action, strategy.getPosition())
+		console.log('Decision :', decision)
+		console.log('decision action', decision.action)
+		console.log('Strategy position', strategy.getPosition())
 		if (decision.action === 'HOLD' && strategy.getPosition() === null) {
 			noTradeLogger.logNoTrade(
 				data,

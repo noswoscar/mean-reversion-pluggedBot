@@ -66,15 +66,12 @@ class DataGatherer {
 	async getRSIData(range = '1h') {
 		try {
 			const url = `${this.rsiServiceUrl}/api/rsi/current?range=${range}`
-			console.log(url)
 			const response = await axios.get(url, {
 				timeout: this.timeout
 			})
-			console.log('rsi response', response)
 
 			if (response.data.success) {
 				const data = response.data.data
-				console.log('got rsi data!! ', response.data.data)
 				return {
 					success: true,
 					currentRsi: data.currentRsi,
